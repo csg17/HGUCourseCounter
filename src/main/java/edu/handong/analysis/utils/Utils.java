@@ -29,9 +29,9 @@ public class Utils {
 			System.exit (0);
 		}
 		
-		if( removeHeader == true ) {
+		/*if( removeHeader == true ) {
 			String line = inputstream.nextLine();
-		}
+		}*/
 		
 		while( inputstream.hasNextLine() ) {
 			fileLines.add(inputstream.nextLine());
@@ -41,36 +41,53 @@ public class Utils {
 		return fileLines;
 	}
 	
-	public static void writeAFile(ArrayList<String> lines, String targetFileName){
-		PrintWriter outputStream = null;
+	public static void writeAFile(ArrayList<String> lines, String targetFileName) {
+ 		PrintWriter outputStream = null;
 		File targetFile = new File(targetFileName);
 		
+		//path가 경로인지 파일 이름인지
 		try {
-			if( targetFileName == null ) {
-				throw new NotEnoughArgumentException("No CLI argument Exception! Please put a file path.");
+			// 아예 값이 없으면 NO CLI 에러 
+			if( targetFileName == null ) { 
+				throw new NotEnoughArgumentException();
 			}
-			else if( !targetFile.exists() ) {
-				targetFile.mkdirs();
-				targetFile = new File(targetFileName);
-				outputStream = new PrintWriter(targetFileName);
+			// 있는데 틀리면 file exception 에러 자동 발생  
+			// 있는데,  파일, 폴더가 없는 경우 
+			if( !targetFile.exists() ) { 
+				//System.out.println("No file and folder");
 				
+				// path인경우 
+				if( targetFileName.lastIndexOf("/") == 0 ) {
+					targetFile.mkdirs();
+					
+					String fileName = targetFileName.substring(targetFileName.lastIndexOf("/")+1);
+					outputStream = new PrintWriter(fileName);
+				}
+				// 파일인 경우 
+				else {	outputStream = new PrintWriter(targetFileName);	}
 			}
+			// 파일, 경로가 존재하는 경우.
 			else {
-				outputStream = new PrintWriter(targetFile);
+				//경로면 파일이름 추출. 
+				if( targetFileName.lastIndexOf("/") == 0 ) {
+					String fileName = targetFileName.substring(targetFileName.lastIndexOf("/")+1);
+					outputStream = new PrintWriter(fileName);
+				}
+				else {	outputStream = new PrintWriter(targetFileName);	}
 			}
 		} catch ( NotEnoughArgumentException e) {
-			System.out.println(e.getMessage());
 			System.exit (0);
 			//경로자체가 없는 경우 
 		} catch (FileNotFoundException e) {
-			System.out.println("The>< file path does not exist. Please check your CLI argument!");
+			e.printStackTrace();
 			System.exit (0);
-		}
-
+		} 
+		
+		//파일에 저장.
 		for(String str : lines) {
 			outputStream.println( str );
 		}
-		
+		//System.out.println("Success!! ");
 	}
 }
 
