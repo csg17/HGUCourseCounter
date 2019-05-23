@@ -1,5 +1,5 @@
 package edu.handong.analysis.utils;
-
+import java.io.BufferedWriter;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -43,6 +43,7 @@ public class Utils {
 	
 	public static void writeAFile(ArrayList<String> lines, String targetFileName) {
  		PrintWriter outputStream = null;
+ 		//private BufferedWriter writerb = null;
 		File targetFile = new File(targetFileName);
 		
 		//path가 경로인지 파일 이름인지
@@ -86,8 +87,8 @@ public class Utils {
 		//파일에 저장.
 		for(String str : lines) {
 			outputStream.println( str );
+			outputStream.flush();
 		}
-		//System.out.println("Success!! ");
 	}
 }
 

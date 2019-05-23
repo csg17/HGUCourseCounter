@@ -123,6 +123,7 @@ public class HGUCoursePatternAnalyzer {
 			
 			for(int j=1; j<=totalNumSemester; j++) {
 				tempString = stud.getName() + "," + totalNumSemester + "," + j + "," + stud.getNumCourseInNthSemester(j);
+				if (tempString == null) { break; }
 				stringForFinal.add( tempString );
 			}
 		}
