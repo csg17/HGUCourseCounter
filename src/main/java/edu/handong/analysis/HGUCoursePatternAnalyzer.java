@@ -55,37 +55,39 @@ public class HGUCoursePatternAnalyzer {
 	 * @return
 	 */
 	private Map<String,Student> loadStudentCourseRecords(ArrayList<String> lines) {
-		Map<String, Student> students_thash = new HashMap<String, Student>();
+		
+		HashMap<String, Student> students_thash = new HashMap<String, Student>();
 		
 		String[] arr = new String[lines.size()];
 		int size = 0;
 			
-		for(String student: lines) {
-			arr[size++] = student;
+ 		for(String studentStr: lines) {
+			arr[size++] = studentStr;
 		}
 		
-		Iterator<Map.Entry<String, Student>> entries = students_thash.entrySet().iterator(); 
+		//Iterator<Map.Entry<String, Student>> entries = students_thash.entrySet().iterator(); 
 		//students_thash.put(Integer.toString(1), student(course));
 		for( int i=1; i<lines.size(); i++ ) {
 			Course newCourse = new Course(arr[i]);
-			if(i==1) {
-				Student newStu = new Student(newCourse.getStudentId());
-				newStu.addCourse(newCourse);
-				students_thash.put( newCourse.getStudentId(), newStu);
+			
+			/*if( i==1 ) {
+				Student newStudent = new Student(newCourse.getStudentId());
+				students_thash.put(newCourse.getStudentId(), newStudent);
 			}
-			else {
-				while(entries.hasNext()) {
-					if( !newCourse.getStudentId().equals(((Entry<String, Student>) entries).getValue().getName() )) {
-						// 해쉬맵에 같은 키값을 가진 해쉬값이 없을 경우 새로 만들어서 해쉬값으로 넣어준다. 
+			else {*/
+					// 해쉬맵에 같은 키값을 가진 해쉬값이 없을 경우 새로 만들어서 해쉬값으로 넣어준다. 
+					if( students_thash.containsKey(newCourse.getStudentId()) ) {
+						students_thash.get(newCourse.getStudentId()).addCourse(newCourse);
+					}
+					else {
 						Student newStudent = new Student(newCourse.getStudentId());
-						newStudent.addCourse(newCourse);
-						
+						newStudent.addCourse( newCourse );	
+							
 						students_thash.put ( newCourse.getStudentId(), newStudent );
 					}
-					((Entry<String, Student>) entries).getValue().addCourse(newCourse);
-				}
-			}
+			//}
 		}
+		
 		return students_thash;
 	// do not forget to return a proper variable.
 	}

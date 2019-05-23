@@ -56,14 +56,14 @@ public class Utils {
 				
 			}
 			else {
-				outputStream = new PrintWriter(targetFileName);
+				outputStream = new PrintWriter(targetFile);
 			}
 		} catch ( NotEnoughArgumentException e) {
 			System.out.println(e.getMessage());
 			System.exit (0);
 			//경로자체가 없는 경우 
 		} catch (FileNotFoundException e) {
-			System.out.println("The file path does not exist. Please check your CLI argument!");
+			System.out.println("The>< file path does not exist. Please check your CLI argument!");
 			System.exit (0);
 		}
 
