@@ -1,5 +1,7 @@
 package edu.handong.analysis.datamodel;
 
+import org.apache.commons.cli.Options;
+
 public  class Course{
 	private String courseName;
 	private String studentId;
@@ -36,5 +38,11 @@ public  class Course{
 	}
 	public int getSemester() {
 		return semesterCourseTaken;
+	}
+	public String getCourseName() {
+		return courseName;
+	}
+	public String getCourseCode() {
+		return courseCode;
 	}
 }

@@ -24,14 +24,10 @@ public class Utils {
 		
 		try {
 			inputstream = new Scanner(new File(filename));
-		} catch ( FileNotFoundException e ) {
+		} catch ( Exception e ) {
 			System.out.println("The file path does not exist. Please check your CLI argument!");
 			System.exit (0);
 		}
-		
-		/*if( removeHeader == true ) {
-			String line = inputstream.nextLine();
-		}*/
 		
 		while( inputstream.hasNextLine() ) {
 			fileLines.add(inputstream.nextLine());
@@ -43,43 +39,38 @@ public class Utils {
 	
 	public static void writeAFile(ArrayList<String> lines, String targetFileName) {
  		PrintWriter outputStream = null;
- 		//private BufferedWriter writerb = null;
 		File targetFile = new File(targetFileName);
 		
 		//path가 경로인지 파일 이름인지
 		try {
 			// 아예 값이 없으면 NO CLI 에러 
-			if( targetFileName == null ) { 
+			/*if( targetFileName == null ) { 
 				throw new NotEnoughArgumentException();
-			}
+			}*/
 			// 있는데 틀리면 file exception 에러 자동 발생  
 			// 있는데,  파일, 폴더가 없는 경우 
 			if( !targetFile.exists() ) { 
 				//System.out.println("No file and folder");
 				
 				// path인경우 
-				if( targetFileName.lastIndexOf("/") == 0 ) {
+				if( targetFileName.indexOf("/") == 0 ) {
+					targetFile = new File(targetFileName.substring(0,targetFileName.lastIndexOf("/")));
 					targetFile.mkdirs();
 					
-					String fileName = targetFileName.substring(targetFileName.lastIndexOf("/")+1);
-					outputStream = new PrintWriter(fileName);
+					outputStream = new PrintWriter(targetFileName);
 				}
 				// 파일인 경우 
 				else {	outputStream = new PrintWriter(targetFileName);	}
 			}
 			// 파일, 경로가 존재하는 경우.
 			else {
-				//경로면 파일이름 추출. 
-				if( targetFileName.lastIndexOf("/") == 0 ) {
-					String fileName = targetFileName.substring(targetFileName.lastIndexOf("/")+1);
-					outputStream = new PrintWriter(fileName);
-				}
-				else {	outputStream = new PrintWriter(targetFileName);	}
+				outputStream = new PrintWriter(targetFileName);
 			}
-		} catch ( NotEnoughArgumentException e) {
+		} /*catch ( NotEnoughArgumentException e) {
 			System.exit (0);
 			//경로자체가 없는 경우 
-		} catch (FileNotFoundException e) {
+		} */catch (FileNotFoundException e) {
+			System.out.println("WE CAN'T MAKE THIS ROOT\n");
 			e.printStackTrace();
 			System.exit (0);
 		} 
@@ -89,6 +80,7 @@ public class Utils {
 			outputStream.println( str );
 			outputStream.flush();
 		}
+		
+		System.out.println("SUCESS :)");
 	}
 }
-
