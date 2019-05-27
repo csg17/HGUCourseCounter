@@ -42,9 +42,10 @@ public class HGUCoursePatternAnalyzer {
 				return;
 			}
 			//parse가 된 이후에 진행되어야 함.
-			ArrayList<String> lines = Utils.getLines(dataPath, true);
 			
-			students = loadStudentCourseRecords(lines);
+			ArrayList<Course> courses = Utils.getLines(dataPath, true);
+			 
+			students = loadStudentCourseRecords(courses);
 			
 			// To sort HashMap entries by key values so that we can save the results by student ids in ascending order.
 			Map<String, Student> sortedStudents = new TreeMap<String,Student>(students); 
@@ -152,31 +153,28 @@ public class HGUCoursePatternAnalyzer {
 	 * @param lines
 	 * @return
 	 */
-	private Map<String,Student> loadStudentCourseRecords(ArrayList<String> lines) {
+	private Map<String,Student> loadStudentCourseRecords(ArrayList<Course> courses) {
 		
 		HashMap<String, Student> students_thash = new HashMap<String, Student>();
 		
-		String[] arr = new String[lines.size()];
+		/*String[] arr = new String[lines.size()];
 		int size = 0;
 			
  		for(String studentStr: lines) {
 			arr[size++] = studentStr;
 		}
-
-		for( int i=1; i<lines.size(); i++ ) {
-			Course newCourse = new Course(arr[i]);
-			
+*/
+		for( int i=1; i<courses.size(); i++ ) {
 					// 해쉬맵에 같은 키값을 가진 해쉬값이 없을 경우 새로 만들어서 해쉬값으로 넣어준다. 
-					if( students_thash.containsKey(newCourse.getStudentId()) ) {
-						students_thash.get(newCourse.getStudentId()).addCourse(newCourse);
+					if( students_thash.containsKey(courses.get(i).getStudentId()) ) {
+						students_thash.get(courses.get(i).getStudentId()).addCourse(courses.get(i));
 					}
 					else {
-						Student newStudent = new Student(newCourse.getStudentId());
-						newStudent.addCourse( newCourse );	
+						Student newStudent = new Student(courses.get(i).getStudentId());
+						newStudent.addCourse( courses.get(i) );	
 							
-						students_thash.put ( newCourse.getStudentId(), newStudent );
+						students_thash.put ( courses.get(i).getStudentId(), newStudent );
 					}
-			//}
 		}
 		
 		return students_thash;

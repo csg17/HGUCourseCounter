@@ -1,10 +1,16 @@
 package edu.handong.analysis.utils;
-import java.io.BufferedWriter;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.util.TreeMap;
 
 import edu.handong.analysis.utils.Utils.*;
 import edu.handong.analysis.*;
+import edu.handong.analysis.datamodel.Course;
 import edu.handong.analysis.datamodel.Student;
 
 import java.util.ArrayList;
@@ -15,26 +21,33 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+
 public class Utils {
 
-	public static ArrayList<String> getLines(String file, boolean removeHeader){
-		String filename = file;
-		Scanner inputstream = null;
-		ArrayList<String> fileLines = new ArrayList<String>();
-		
+	public static ArrayList<Course> getLines(String file, boolean removeHeader){
+		ArrayList<Course> courses = new ArrayList<Course>();
+		BufferedReader reader;
+		 
 		try {
-			inputstream = new Scanner(new File(filename));
+			reader = Files.newBufferedReader( Paths.get(file) );
+			CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT
+                    .withFirstRecordAsHeader()
+                    .withIgnoreHeaderCase()
+                    .withTrim());
+			
+			for (CSVRecord csvRecord: csvParser) {
+	            // Accessing Values by Column Index
+	            courses.add( new Course(csvRecord.get(0), csvRecord.get(1), csvRecord.get(2), csvRecord.get(3), csvRecord.get(4), csvRecord.get(5), Integer.parseInt( csvRecord.get(7)), Integer.parseInt( csvRecord.get(8))));
+			}
 		} catch ( Exception e ) {
 			System.out.println("The file path does not exist. Please check your CLI argument!");
 			System.exit (0);
 		}
-		
-		while( inputstream.hasNextLine() ) {
-			fileLines.add(inputstream.nextLine());
-		}
-		inputstream.close();
-		
-		return fileLines;
+
+		return courses;
 	}
 	
 	public static void writeAFile(ArrayList<String> lines, String targetFileName) {
@@ -81,6 +94,6 @@ public class Utils {
 			outputStream.flush();
 		}
 		
-		System.out.println("SUCESS :)");
+		System.out.println("파일만들기 성공 짝짜라라랄꿍꿍꿍><");
 	}
-}
+} 

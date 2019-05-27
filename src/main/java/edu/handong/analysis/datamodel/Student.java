@@ -13,7 +13,7 @@ public class Student{
 	public Student() {	}
 	public String getName() {
 		return studentID;
-	}
+	} 
 	public void addCourse(Course newRecord) {
 		coursesTaken.add(newRecord);
 	}
