@@ -55,45 +55,24 @@ public class Utils {
 		File targetFile = new File(targetFileName);
 		
 		//path가 경로인지 파일 이름인지
-		try {
-			// 아예 값이 없으면 NO CLI 에러 
-			/*if( targetFileName == null ) { 
-				throw new NotEnoughArgumentException();
-			}*/
-			// 있는데 틀리면 file exception 에러 자동 발생  
-			// 있는데,  파일, 폴더가 없는 경우 
-			if( !targetFile.exists() ) { 
-				//System.out.println("No file and folder");
-				
-				// path인경우 
-				if( targetFileName.indexOf("/") == 0 ) {
-					targetFile = new File(targetFileName.substring(0,targetFileName.lastIndexOf("/")));
-					targetFile.mkdirs();
-					
-					outputStream = new PrintWriter(targetFileName);
-				}
-				// 파일인 경우 
-				else {	outputStream = new PrintWriter(targetFileName);	}
+		if( !targetFile.exists() ) { 
+			if(targetFile.getParent() != null ) {
+				targetFile.getParentFile().mkdirs();
 			}
-			// 파일, 경로가 존재하는 경우.
-			else {
-				outputStream = new PrintWriter(targetFileName);
-			}
-		} /*catch ( NotEnoughArgumentException e) {
-			System.exit (0);
-			//경로자체가 없는 경우 
-		} */catch (FileNotFoundException e) {
-			System.out.println("WE CAN'T MAKE THIS ROOT\n");
-			e.printStackTrace();
-			System.exit (0);
-		} 
+		}
 		
+		try {
+			outputStream = new PrintWriter(targetFile);
+		} catch (Exception e) {
+			System.out.println("This is wrong root. Write again please.");
+			System.exit(0);
+		}
 		//파일에 저장.
 		for(String str : lines) {
 			outputStream.println( str );
 			outputStream.flush();
 		}
 		
-		System.out.println("파일만들기 성공 짝짜라라랄꿍꿍꿍><");
+		System.out.println("<< The file is saved>>");
 	}
 } 

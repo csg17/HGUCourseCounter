@@ -23,7 +23,7 @@ public class HGUCoursePatternAnalyzer {
 	private int startYear;
 	private int endYear;
 	private int analOpt;
-	private boolean help ,value;
+	private boolean help ,value=false;
 	private String courseName;
 	private Map<String, Student> students = new HashMap<String, Student>();
 	
@@ -39,7 +39,8 @@ public class HGUCoursePatternAnalyzer {
 		if ( parseOption(options, args) ) {
 			if (help) {
 				printHelp(options);
-				return;
+				System.out.println( "<<This is printed since you want>>");
+				//return;
 			}
 			//parse가 된 이후에 진행되어야 함.
 			
@@ -66,7 +67,10 @@ public class HGUCoursePatternAnalyzer {
 			dataPath = cmd.getOptionValue("i");
 			resultPath = cmd.getOptionValue("o");
 			analOpt = Integer.parseInt( cmd.getOptionValue("a") );
-			if(analOpt == 1) { value=false; }
+			if(analOpt == 1) { 
+				value=false;
+				//courseCode = cmd.getOptionValue("c");
+			}
 			else { 
 				value=true; 
 				courseCode = cmd.getOptionValue("c");
@@ -75,10 +79,10 @@ public class HGUCoursePatternAnalyzer {
 			endYear =  Integer.parseInt( cmd.getOptionValue("e") );
 			help = cmd.hasOption("h");
 			
-			//numOfStudent = Integer.parseInt( cmd.getOptionValue("s") );
-		//numOfCourses = Integer.parseInt( cmd.getOptionValue("s") );
 		} catch(Exception e) { //최상위 클래스 넣어서 한번에 처리, exception 나오면 도움말 출력  
-		 	printHelp(options);
+			System.out.println("<<This is option problem>>");
+			System.out.println(e.getMessage() + "\n");
+			printHelp(options);
 		 	System.exit(0);
 		}
 		return true;
@@ -119,7 +123,7 @@ public class HGUCoursePatternAnalyzer {
 		
 		options.addOption(Option.builder("c").longOpt("coursecode")
 				.desc("Course code for '-a 2' option") // description
-				.hasArg() //값받아야 하니
+				.hasArg()//값받아야 하니
 				.argName("course code") //argument name이 어떤 걸 의미하는지 보여주는 역
 				.required(value)
 				.build());
@@ -140,7 +144,7 @@ public class HGUCoursePatternAnalyzer {
 		
 		options.addOption(Option.builder("h").longOpt("help")
 				.desc("Show a Help page") // description
-				.hasArg() //값받아야 하니
+				//.hasArg() //값받아야 하니
 				.argName("Help") //argument name이 어떤 걸 의미하는지 보여주는 역       
 				.build());
 		
@@ -157,13 +161,6 @@ public class HGUCoursePatternAnalyzer {
 		
 		HashMap<String, Student> students_thash = new HashMap<String, Student>();
 		
-		/*String[] arr = new String[lines.size()];
-		int size = 0;
-			
- 		for(String studentStr: lines) {
-			arr[size++] = studentStr;
-		}
-*/
 		for( int i=1; i<courses.size(); i++ ) {
 					// 해쉬맵에 같은 키값을 가진 해쉬값이 없을 경우 새로 만들어서 해쉬값으로 넣어준다. 
 					if( students_thash.containsKey(courses.get(i).getStudentId()) ) {
@@ -178,7 +175,6 @@ public class HGUCoursePatternAnalyzer {
 		}
 		
 		return students_thash;
-	// do not forget to return a proper variable.
 	}
 
 
