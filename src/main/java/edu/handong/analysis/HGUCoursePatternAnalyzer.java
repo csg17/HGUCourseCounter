@@ -73,6 +73,7 @@ public class HGUCoursePatternAnalyzer {
 			}
 			else { 
 				value=true; 
+				if(!cmd.hasOption("c")) {	throw new Exception(); }
 				courseCode = cmd.getOptionValue("c");
 			}
 			startYear =  Integer.parseInt( cmd.getOptionValue("s") );
@@ -81,7 +82,6 @@ public class HGUCoursePatternAnalyzer {
 			
 		} catch(Exception e) { //최상위 클래스 넣어서 한번에 처리, exception 나오면 도움말 출력  
 			System.out.println("<<This is option problem>>");
-			System.out.println(e.getMessage() + "\n");
 			printHelp(options);
 		 	System.exit(0);
 		}
@@ -188,25 +188,33 @@ public class HGUCoursePatternAnalyzer {
 		Integer a = 0;
 		
 		switch(analOpt) {
+
+			
 			case 1:
 				// 1. 해쉬맵 바탕으로 학생 돌리기
 				// 2. 학생당) 총 몇학긴지 계산바탕으로 반복문 돌려서 학기마다 getnum~ 함수써서 값 계산
 				// 3. 그때마다 스트링 만들어서 arraylist에 저장 
 				stringForFinal.add("StudentID, TotalNumberOfSemestersRegistered, Semester, NumCoursesTakenInTheSemester");
+				int j = 1;
 				
-				java.util.Iterator iter = sortedStudents.keySet().iterator();
+				//java.util.Iterator iter = sortedStudents.keySet().iterator();
 				for(Map.Entry<String, Student> entry: sortedStudents.entrySet()) {
+					j=1;
 					stud = entry.getValue(); // 학생인스턴 1명 
 					
 					HashMap<String, Integer> temp = stud.getSemestersByYearAndSemester();
 					//size 필요해서!
 					Map<String, Integer> Treetemp = new TreeMap<String, Integer>(temp);
-					//totalNumSemester = Treetemp.size();
 					
-					for(int j=1; j<=Treetemp.size(); j++) {
-						tempString = stud.getName() + "," + Treetemp.size() + "," + j + "," + stud.getNumCourseInNthSemester(j);
-						if (tempString == null) { break; }
-						stringForFinal.add( tempString );
+					//for(int j=1; j<=Treetemp.size(); j++) {
+					for( Map.Entry<String, Integer> elem : Treetemp.entrySet() ) {
+						String u = elem.getKey().split("-")[0];
+						if( Integer.parseInt( u) >= startYear && Integer.parseInt( u) <= endYear ) {
+							tempString = stud.getName() + "," + Treetemp.size() + "," + j + "," + stud.getNumCourseInNthSemester(j);
+							if (tempString == null) { break; }
+							stringForFinal.add( tempString );
+						}
+						j++;
 					}
 				}
 				break;
@@ -257,24 +265,45 @@ public class HGUCoursePatternAnalyzer {
 					}
 				}
 				
+				/////////startyear-endyear/////////
+				ArrayList<String> Year = new ArrayList<String>();
+				for( int i = startYear; i<=endYear; i++ ) {
+					String saveYear = i + "-1";
+					Year.add(saveYear);
+					saveYear = i + "-2";
+					Year.add(saveYear);
+					saveYear = i + "-3";
+					Year.add(saveYear);
+					saveYear = i + "-4";
+					Year.add(saveYear);
+					
+				}
 				
 				/////////출력단계////////////////////
 				//TreeMap<String, Integer> t = new TreeMap<String, Integer>(infoPerCourseCode);
 				TreeMap<String, Integer> p = new TreeMap<String, Integer>(infoPerCourseCode);
 				
-				for (Map.Entry<String, Integer> elem : p.entrySet() ) {
-					Integer year = Integer.parseInt( elem.getKey().split("-")[0] );
-					Integer sem = Integer.parseInt( elem.getKey().split("-")[1] );
-					
-					a = infoPerYearSem.get( elem.getKey() );
-					int b = infoPerCourseCode.get(elem.getKey());
-					double rate = b / (double) a * 100; 
-					tempString = year+","+sem +","+ courseCode+","+courseName+","+a+","+p.get(elem.getKey())+","+String.format("%.1f", rate)+"%";
-					stringForFinal.add( tempString );
+				for( String oneYear : Year ) {
+					Integer year = Integer.parseInt( oneYear.split("-")[0] );
+					Integer sem = Integer.parseInt( oneYear.split("-")[1] );
+					//for (Map.Entry<String, Integer> elem : p.entrySet() ) {
+					if( infoPerCourseCode.containsKey(oneYear) ) {
+						
+						a = infoPerYearSem.get( oneYear );
+						int b = infoPerCourseCode.get( oneYear );
+						double rate = b / (double) a * 100; 
+						tempString = year+","+sem +","+ courseCode+","+courseName+","+a+","+infoPerCourseCode.get(oneYear)+","+String.format("%.1f", rate)+"%";
+						stringForFinal.add( tempString );
+					}
+					else {
+						a = infoPerYearSem.get( oneYear );
+						double rate = 0 / (double) a * 100; 
+						tempString = year+","+sem +","+ courseCode+","+courseName+","+a+","+ 0 +","+String.format("%.1f", rate)+"%";
+						stringForFinal.add( tempString );
+					}
 				}
 				break;
 		}
 		return stringForFinal;
 	}
 }
-	
