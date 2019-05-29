@@ -82,7 +82,7 @@
 				help = cmd.hasOption("h");
 				
 			} catch(Exception e) { //최상위 클래스 넣어서 한번에 처리, exception 나오면 도움말 출력  
-				System.out.println("<<This is option problem>>");
+				//System.out.println("<<This is option problem>>");
 				printHelp(options);
 			 	System.exit(0);
 			}
